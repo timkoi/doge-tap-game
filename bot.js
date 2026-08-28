@@ -14,7 +14,7 @@ bot.start((ctx) => {
     ctx.reply('Добро пожаловать в Doge Tap! Жми кнопку:', {
         reply_markup: {
             inline_keyboard: [
-                [{ text: 'ИГРАТЬ', web_app: { url: 'https://ТВОЙ-ДОМЕН.com' } }]
+                [{ text: 'ИГРАТЬ', web_app: { url: 'https://doge-tap-game.onrender.com' } }]
             ]
         }
     });
