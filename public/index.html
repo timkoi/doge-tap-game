@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Doge Tap</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial;
+            color: white;
+            user-select: none;
+            overflow: hidden;
+        }
+        .balance {
+            font-size: 42px;
+            font-weight: bold;
+            color: #f0b90b;
+            margin-bottom: 30px;
+        }
+        .doge-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 5px solid #f0b90b;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
+        }
+        .doge-img:active {
+            transform: scale(0.85);
+        }
+        .info {
+            margin-top: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="balance">💰 <span id="score">0</span> DOGE</div>
+    <img src="https://i.ibb.co/Ph1LmJX/doge.png" class="doge-img" id="doge" alt="Doge">
+    <div class="info">Тапай по Doge! Скоро будут Pepe и апгрейды!</div>
+
+    <script>
+        let score = 0;
+        const scoreElement = document.getElementById('score');
+        const doge = document.getElementById('doge');
+
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        doge.addEventListener('click', () => {
+            score++;
+            scoreElement.textContent = score;
+        });
+    </script>
+</body>
+</html>
