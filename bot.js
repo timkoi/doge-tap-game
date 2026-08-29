@@ -304,25 +304,38 @@ app.post('/telegram-webhook', (req, res) => {
     bot.handleUpdate(req.body, res);
 });
 
-bot.start((ctx) => {
-    ctx.reply('Добро пожаловать в DOGE Click! Жми кнопку:', {
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: 'ИГРАТЬ', web_app: { url: 'https://doge-tap-game.onrender.com' } }]
-            ]
-        }
-    });
+// ==================== START: ГИФКА + КНОПКА ====================
+bot.start(async (ctx) => {
+    const chatId = ctx.chat.id;
+    const gifUrl = 'https://media.giphy.com/media/lMyEespPQdFoWuK4oP/giphy.gif';
+    
+    try {
+        await ctx.replyWithAnimation(gifUrl, {
+            caption: 'Добро пожаловать в DOGE Click! Жми кнопку и начинай тапать! 🐕💰',
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'ИГРАТЬ', web_app: { url: 'https://doge-tap-game.onrender.com' } }]
+                ]
+            }
+        });
+    } catch (err) {
+        ctx.reply('Добро пожаловать в DOGE Click! Жми кнопку:', {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'ИГРАТЬ', web_app: { url: 'https://doge-tap-game.onrender.com' } }]
+                ]
+            }
+        });
+    }
 });
 
 app.listen(PORT, async () => {
     console.log('Сервер запущен на порту ' + PORT);
-    
     try {
         await bot.telegram.setWebhook(WEBHOOK_URL);
         console.log('Webhook установлен!');
     } catch (err) {
         console.error('Ошибка webhook:', err.message);
     }
-    
     console.log('Бот запущен!');
 });
