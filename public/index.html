@@ -24,6 +24,14 @@
             font-weight: bold;
             color: #f0b90b;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .coin-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
         .energy-container {
             width: 200px;
@@ -83,7 +91,10 @@
     </style>
 </head>
 <body>
-    <div class="balance">💰 <span id="score">0</span> DOGE</div>
+    <div class="balance">
+        <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="coin-icon" alt="DOGE">
+        <span id="score">0</span> DOGE
+    </div>
     <div class="energy-text">⚡ Энергия: <span id="energyCount">100</span>/100</div>
     <div class="energy-container">
         <div class="energy-fill" id="energyFill"></div>
@@ -105,19 +116,16 @@
         tg.expand();
         tg.ready();
         
-        // ЗАГРУЗКА СОХРАНЁННЫХ МОНЕТ
         const savedScore = localStorage.getItem('dogeScore');
         if (savedScore) {
             score = parseInt(savedScore);
             scoreElement.textContent = score;
         }
         
-        // СОХРАНЕНИЕ МОНЕТ
         function saveScore() {
             localStorage.setItem('dogeScore', score);
         }
         
-        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
@@ -130,7 +138,6 @@
             energyCount.textContent = energy;
         }
         
-        // Тап по Doge
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
                 alert('Энергия закончилась! Подожди немного ⚡');
