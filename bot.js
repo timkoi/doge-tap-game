@@ -8,43 +8,104 @@ const PORT = process.env.PORT || 3000;
 const BOT_TOKEN = '8581159804:AAHzqC9moFkFuSWhWwBz7p2MdANOntZMv3A';
 const bot = new Telegraf(BOT_TOKEN);
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // База данных в памяти
-let players = {};
+let players = new Map();
 
-// API: сохранить очки
+function getPlayer(userId) {
+    if (!players.has(userId)) {
+        players.set(userId, {
+            userId,
+            username: 'Player',
+            score: 0,
+            bones: 0,
+            energy: 100,
+            maxEnergy: 100,
+            lastEnergyUpdate: Date.now(),
+            tapLevel: 0,
+            energyLevel: 0,
+            autoLevel: 0,
+            evolution: 0,
+            streak: 0,
+            lastClaimDate: '',
+            achievements: {},
+            createdAt: Date.now()
+        });
+    }
+    return players.get(userId);
+}
+
+function regenerateEnergy(player) {
+    const now = Date.now();
+    const elapsed = (now - player.lastEnergyUpdate) / 1000;
+    const regenRate = 1 + player.energyLevel * 0.5;
+    const gained = Math.floor(elapsed * regenRate);
+    if (gained > 0) {
+        player.energy = Math.min(player.maxEnergy, player.energy + gained);
+        player.lastEnergyUpdate = now;
+    }
+}
+
+// Rate limiting
+const rateLimit = new Map();
+function checkRate(userId, limit = 60) {
+    const now = Date.now();
+    const windowMs = 60000;
+    if (!rateLimit.has(userId)) {
+        rateLimit.set(userId, []);
+    }
+    const requests = rateLimit.get(userId);
+    const recent = requests.filter(t => now - t < windowMs);
+    if (recent.length >= limit) return false;
+    recent.push(now);
+    rateLimit.set(userId, recent);
+    return true;
+}
+
+// API: сохранение прогресса
 app.post('/api/save', (req, res) => {
-    const { userId, username, score } = req.body;
+    const { userId, username, score, energy, tapLevel, energyLevel, autoLevel, bones, evolution } = req.body;
+    
     if (!userId) return res.status(400).json({ error: 'No userId' });
+    if (!checkRate(userId)) return res.status(429).json({ error: 'Rate limit' });
     
-    if (!players[userId] || players[userId].score < score) {
-        players[userId] = {
-            username: username || 'Player',
-            score: score
-        };
+    const player = getPlayer(userId);
+    
+    if (typeof score === 'number' && score >= player.score) {
+        player.score = Math.floor(score);
     }
     
-    res.json({ success: true, score: players[userId].score });
+    if (typeof energy === 'number') {
+        player.energy = Math.min(player.maxEnergy, Math.max(0, Math.floor(energy)));
+    }
+    
+    player.tapLevel = Math.max(player.tapLevel, Math.floor(tapLevel || 0));
+    player.energyLevel = Math.max(player.energyLevel, Math.floor(energyLevel || 0));
+    player.autoLevel = Math.max(player.autoLevel, Math.floor(autoLevel || 0));
+    player.bones = Math.max(player.bones, Math.floor(bones || 0));
+    player.evolution = Math.max(player.evolution, Math.floor(evolution || 0));
+    
+    if (username) player.username = String(username).slice(0, 50);
+    
+    res.json({ success: true, serverScore: player.score });
 });
 
-// API: получить топ-100
+// API: получение игрока
+app.get('/api/player/:userId', (req, res) => {
+    const player = getPlayer(req.params.userId);
+    regenerateEnergy(player);
+    res.json(player);
+});
+
+// API: лидерборд
 app.get('/api/leaderboard', (req, res) => {
-    const top = Object.values(players)
+    const top = Array.from(players.values())
         .sort((a, b) => b.score - a.score)
-        .slice(0, 100);
+        .slice(0, 100)
+        .map(p => ({ username: p.username, score: p.score, evolution: p.evolution }));
     res.json(top);
-});
-
-// API: получить очки игрока
-app.get('/api/score/:userId', (req, res) => {
-    const userId = req.params.userId;
-    if (players[userId]) {
-        res.json({ score: players[userId].score });
-    } else {
-        res.json({ score: 0 });
-    }
 });
 
 bot.start((ctx) => {
