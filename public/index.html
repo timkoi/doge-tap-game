@@ -6,8 +6,12 @@
     <title>Doge Tap</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
             background: #1a1a2e;
             display: flex;
             flex-direction: column;
@@ -18,27 +22,30 @@
             color: white;
             user-select: none;
             overflow: hidden;
+            touch-action: manipulation;
         }
-        .balance {
-            font-size: 42px;
-            font-weight: bold;
-            color: #f0b90b;
-            margin-bottom: 20px;
+        .header {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 20px;
         }
         .coin-icon {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
+        }
+        .balance {
+            font-size: 36px;
+            font-weight: bold;
+            color: #f0b90b;
         }
         .energy-container {
             width: 200px;
-            height: 15px;
+            height: 12px;
             background: #333;
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
             overflow: hidden;
         }
         .energy-fill {
@@ -48,126 +55,331 @@
             transition: width 0.3s;
         }
         .energy-text {
-            font-size: 12px;
+            font-size: 11px;
             color: #aaa;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
         }
         .doge-img {
-            width: 250px;
-            height: 250px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             cursor: pointer;
-            border: 5px solid #f0b90b;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6);
-            background: transparent;
+            border: 4px solid #f0b90b;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            transition: transform 0.05s;
         }
         .doge-img:active {
-            transform: scale(0.85);
+            transform: scale(0.88);
         }
-        .info {
+        .shop-btn {
             margin-top: 20px;
-            color: #888;
+            background: #f0b90b;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .shop-btn:active {
+            transform: scale(0.95);
         }
         .floating-score {
             position: fixed;
             pointer-events: none;
             z-index: 1000;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 22px;
             color: #f0b90b;
             text-shadow: 0 0 10px rgba(240, 185, 11, 0.8);
             animation: floatUp 0.9s ease-out forwards;
         }
         @keyframes floatUp {
-            0% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-80px);
-            }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-80px); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f0b90b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .upgrade-item {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .upgrade-info {
+            flex: 1;
+        }
+        .upgrade-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .upgrade-desc {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+        .upgrade-buy {
+            background: #f0b90b;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        .upgrade-buy:disabled {
+            background: #555;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 15px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="balance">
+    <div class="header">
         <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="coin-icon" alt="DOGE">
-        <span id="score">0</span> DOGE
+        <span class="balance"><span id="score">0</span> DOGE</span>
     </div>
-    <div class="energy-text">⚡ Энергия: <span id="energyCount">100</span>/100</div>
     <div class="energy-container">
         <div class="energy-fill" id="energyFill"></div>
     </div>
+    <div class="energy-text">⚡ Энергия: <span id="energyCount">100</span>/<span id="maxEnergyText">100</span></div>
+    
     <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="doge-img" id="doge" alt="Doge">
-    <div class="info">Тапай по Doge!</div>
+    
+    <button class="shop-btn" id="shopBtn">🛒 Магазин</button>
+
+    <div class="modal" id="shopModal">
+        <div class="modal-content">
+            <div class="modal-title">🛒 Магазин улучшений</div>
+            
+            <div class="upgrade-item">
+                <div class="upgrade-info">
+                    <div class="upgrade-name">👆 Множитель тапа</div>
+                    <div class="upgrade-desc">+1 к каждому тапу (уровень <span id="tapLevel">0</span>)</div>
+                </div>
+                <button class="upgrade-buy" id="buyTap">100 DOGE</button>
+            </div>
+            
+            <div class="upgrade-item">
+                <div class="upgrade-info">
+                    <div class="upgrade-name">⚡ Увеличение энергии</div>
+                    <div class="upgrade-desc">+50 к макс. энергии (уровень <span id="energyLevel">0</span>)</div>
+                </div>
+                <button class="upgrade-buy" id="buyEnergy">150 DOGE</button>
+            </div>
+            
+            <div class="upgrade-item">
+                <div class="upgrade-info">
+                    <div class="upgrade-name">🤖 Автокликер</div>
+                    <div class="upgrade-desc">+1 DOGE/сек (уровень <span id="autoLevel">0</span>)</div>
+                </div>
+                <button class="upgrade-buy" id="buyAuto">200 DOGE</button>
+            </div>
+            
+            <button class="close-btn" id="closeShop">Закрыть</button>
+        </div>
+    </div>
 
     <script>
         let score = 0;
         let energy = 100;
-        const maxEnergy = 100;
+        let maxEnergy = 100;
+        let tapLevel = 0;
+        let energyLevel = 0;
+        let autoLevel = 0;
         
         const scoreElement = document.getElementById('score');
         const doge = document.getElementById('doge');
         const energyFill = document.getElementById('energyFill');
         const energyCount = document.getElementById('energyCount');
+        const maxEnergyText = document.getElementById('maxEnergyText');
+        const tapLevelEl = document.getElementById('tapLevel');
+        const energyLevelEl = document.getElementById('energyLevel');
+        const autoLevelEl = document.getElementById('autoLevel');
+        const shopBtn = document.getElementById('shopBtn');
+        const shopModal = document.getElementById('shopModal');
+        const closeShop = document.getElementById('closeShop');
+        const buyTap = document.getElementById('buyTap');
+        const buyEnergy = document.getElementById('buyEnergy');
+        const buyAuto = document.getElementById('buyAuto');
         
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
         
-        const savedScore = localStorage.getItem('dogeScore');
-        if (savedScore) {
-            score = parseInt(savedScore);
-            scoreElement.textContent = score;
-        }
+        // Загрузка сохранений
+        score = parseInt(localStorage.getItem('dogeScore') || '0');
+        tapLevel = parseInt(localStorage.getItem('tapLevel') || '0');
+        energyLevel = parseInt(localStorage.getItem('energyLevel') || '0');
+        autoLevel = parseInt(localStorage.getItem('autoLevel') || '0');
+        maxEnergy = 100 + energyLevel * 50;
+        energy = parseInt(localStorage.getItem('energy') || String(maxEnergy));
+        if (energy > maxEnergy) energy = maxEnergy;
         
-        function saveScore() {
+        scoreElement.textContent = score;
+        updateUI();
+        
+        function saveGame() {
             localStorage.setItem('dogeScore', score);
+            localStorage.setItem('tapLevel', tapLevel);
+            localStorage.setItem('energyLevel', energyLevel);
+            localStorage.setItem('autoLevel', autoLevel);
+            localStorage.setItem('energy', energy);
         }
         
+        function updateUI() {
+            energyFill.style.width = (energy / maxEnergy * 100) + '%';
+            energyCount.textContent = energy;
+            maxEnergyText.textContent = maxEnergy;
+            tapLevelEl.textContent = tapLevel;
+            energyLevelEl.textContent = energyLevel;
+            autoLevelEl.textContent = autoLevel;
+            updateButtons();
+        }
+        
+        function updateButtons() {
+            buyTap.disabled = score < 100 * (tapLevel + 1);
+            buyTap.textContent = (100 * (tapLevel + 1)) + ' DOGE';
+            buyEnergy.disabled = score < 150 * (energyLevel + 1);
+            buyEnergy.textContent = (150 * (energyLevel + 1)) + ' DOGE';
+            buyAuto.disabled = score < 200 * (autoLevel + 1);
+            buyAuto.textContent = (200 * (autoLevel + 1)) + ' DOGE';
+        }
+        
+        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
-                updateEnergy();
+                updateUI();
+                saveGame();
             }
         }, 3000);
         
-        function updateEnergy() {
-            energyFill.style.width = (energy / maxEnergy * 100) + '%';
-            energyCount.textContent = energy;
-        }
+        // Автокликер
+        setInterval(() => {
+            if (autoLevel > 0) {
+                score += autoLevel;
+                scoreElement.textContent = score;
+                saveGame();
+            }
+        }, 1000);
         
+        // Тап
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
-                alert('Энергия закончилась! Подожди немного ⚡');
                 return;
             }
             
-            score++;
+            const gain = 1 + tapLevel;
+            score += gain;
             energy--;
             
             scoreElement.textContent = score;
-            updateEnergy();
-            saveScore();
+            updateUI();
+            saveGame();
             
-            createFloatingScore(e.clientX, e.clientY);
+            createFloatingScore(e.clientX, e.clientY, '+' + gain);
             
             if (tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
         });
         
-        function createFloatingScore(x, y) {
-            const plusOne = document.createElement('div');
-            plusOne.textContent = '+1';
-            plusOne.className = 'floating-score';
-            plusOne.style.left = (x + Math.random() * 20 - 10) + 'px';
-            plusOne.style.top = (y - 20) + 'px';
-            document.body.appendChild(plusOne);
-            
-            setTimeout(() => plusOne.remove(), 900);
+        function createFloatingScore(x, y, text) {
+            const plus = document.createElement('div');
+            plus.textContent = text;
+            plus.className = 'floating-score';
+            plus.style.left = (x + Math.random() * 20 - 10) + 'px';
+            plus.style.top = (y - 20) + 'px';
+            document.body.appendChild(plus);
+            setTimeout(() => plus.remove(), 900);
         }
+        
+        // Магазин
+        shopBtn.addEventListener('click', () => {
+            shopModal.style.display = 'block';
+            updateButtons();
+        });
+        
+        closeShop.addEventListener('click', () => {
+            shopModal.style.display = 'none';
+        });
+        
+        buyTap.addEventListener('click', () => {
+            const cost = 100 * (tapLevel + 1);
+            if (score >= cost) {
+                score -= cost;
+                tapLevel++;
+                scoreElement.textContent = score;
+                saveGame();
+                updateUI();
+            }
+        });
+        
+        buyEnergy.addEventListener('click', () => {
+            const cost = 150 * (energyLevel + 1);
+            if (score >= cost) {
+                score -= cost;
+                energyLevel++;
+                maxEnergy = 100 + energyLevel * 50;
+                energy = maxEnergy;
+                scoreElement.textContent = score;
+                saveGame();
+                updateUI();
+            }
+        });
+        
+        buyAuto.addEventListener('click', () => {
+            const cost = 200 * (autoLevel + 1);
+            if (score >= cost) {
+                score -= cost;
+                autoLevel++;
+                scoreElement.textContent = score;
+                saveGame();
+                updateUI();
+            }
+        });
         
         document.addEventListener('touchmove', (e) => {
             e.preventDefault();
