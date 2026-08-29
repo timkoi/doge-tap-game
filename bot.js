@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 const BOT_TOKEN = '8581159804:AAHzqC9moFkFuSWhWwBz7p2MdANOntZMv3A';
 const MONGO_URI = 'mongodb+srv://dogeadmin:P%23mCqRpQN%40fcc3x@cluster0.kbtywaf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const WEBHOOK_URL = 'https://doge-tap-game.onrender.com/telegram-webhook';
 
 const bot = new Telegraf(BOT_TOKEN);
 
@@ -298,6 +299,11 @@ app.get('/api/items', (req, res) => {
     res.json(GAME_ITEMS);
 });
 
+// ==================== WEBHOOK ====================
+app.post('/telegram-webhook', (req, res) => {
+    bot.handleUpdate(req.body, res);
+});
+
 bot.start((ctx) => {
     ctx.reply('Добро пожаловать в DOGE Click! Жми кнопку:', {
         reply_markup: {
@@ -308,8 +314,16 @@ bot.start((ctx) => {
     });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log('Сервер запущен на порту ' + PORT);
-    bot.launch();
+    
+    // Устанавливаем webhook
+    try {
+        await bot.telegram.setWebhook(WEBHOOK_URL);
+        console.log('Webhook установлен!');
+    } catch (err) {
+        console.error('Ошибка webhook:', err.message);
+    }
+    
     console.log('Бот запущен!');
 });
