@@ -72,18 +72,27 @@
             transform: scale(0.88);
         }
         .shop-btn {
-            margin-top: 20px;
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             background: #f0b90b;
             color: #1a1a2e;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 24px;
             cursor: pointer;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(240, 185, 11, 0.5);
+            z-index: 100;
         }
         .shop-btn:active {
-            transform: scale(0.95);
+            transform: translateY(-50%) scale(0.9);
         }
         .floating-score {
             position: fixed;
@@ -133,6 +142,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 2px solid #333;
+        }
+        .upgrade-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
         }
         .upgrade-info {
             flex: 1;
@@ -150,12 +167,13 @@
             background: #f0b90b;
             color: #1a1a2e;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 15px;
             font-weight: bold;
             cursor: pointer;
             margin-left: 10px;
             white-space: nowrap;
+            font-size: 12px;
         }
         .upgrade-buy:disabled {
             background: #555;
@@ -187,13 +205,14 @@
     
     <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="doge-img" id="doge" alt="Doge">
     
-    <button class="shop-btn" id="shopBtn">🛒 Магазин</button>
+    <button class="shop-btn" id="shopBtn">🛒</button>
 
     <div class="modal" id="shopModal">
         <div class="modal-content">
             <div class="modal-title">🛒 Магазин улучшений</div>
             
             <div class="upgrade-item">
+                <img src="https://i.imgur.com/0Xl3jE5.png" class="upgrade-icon" alt="Tap">
                 <div class="upgrade-info">
                     <div class="upgrade-name">👆 Множитель тапа</div>
                     <div class="upgrade-desc">+1 к каждому тапу (уровень <span id="tapLevel">0</span>)</div>
@@ -202,6 +221,7 @@
             </div>
             
             <div class="upgrade-item">
+                <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="upgrade-icon" alt="Energy">
                 <div class="upgrade-info">
                     <div class="upgrade-name">⚡ Увеличение энергии</div>
                     <div class="upgrade-desc">+50 к макс. энергии (уровень <span id="energyLevel">0</span>)</div>
@@ -210,6 +230,7 @@
             </div>
             
             <div class="upgrade-item">
+                <img src="https://i.imgur.com/B7x6l3P.png" class="upgrade-icon" alt="Auto">
                 <div class="upgrade-info">
                     <div class="upgrade-name">🤖 Автокликер</div>
                     <div class="upgrade-desc">+1 DOGE/сек (уровень <span id="autoLevel">0</span>)</div>
@@ -248,7 +269,6 @@
         tg.expand();
         tg.ready();
         
-        // Загрузка сохранений
         score = parseInt(localStorage.getItem('dogeScore') || '0');
         tapLevel = parseInt(localStorage.getItem('tapLevel') || '0');
         energyLevel = parseInt(localStorage.getItem('energyLevel') || '0');
@@ -287,7 +307,6 @@
             buyAuto.textContent = (200 * (autoLevel + 1)) + ' DOGE';
         }
         
-        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
@@ -296,7 +315,6 @@
             }
         }, 3000);
         
-        // Автокликер
         setInterval(() => {
             if (autoLevel > 0) {
                 score += autoLevel;
@@ -305,7 +323,6 @@
             }
         }, 1000);
         
-        // Тап
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
                 return;
@@ -336,7 +353,6 @@
             setTimeout(() => plus.remove(), 900);
         }
         
-        // Магазин
         shopBtn.addEventListener('click', () => {
             shopModal.style.display = 'block';
             updateButtons();
