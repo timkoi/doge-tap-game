@@ -140,7 +140,7 @@ function processAutoClicker(player) {
 }
 
 const rateLimit = new Map();
-function checkRate(userId, limit = 30) {
+function checkRate(userId, limit = 300) {
     const now = Date.now();
     if (!rateLimit.has(userId)) rateLimit.set(userId, []);
     const requests = rateLimit.get(userId);
@@ -193,7 +193,7 @@ app.post('/api/heartbeat', async (req, res) => {
 app.post('/api/click', async (req, res) => {
     const { userId } = req.body;
     if (!userId) return res.status(400).json({ error: 'No userId' });
-    if (!checkRate(userId, 30)) return res.status(429).json({ error: 'Rate limit' });
+    if (!checkRate(userId, 300)) return res.status(429).json({ error: 'Rate limit' });
     try {
         const player = await getPlayer(userId);
         regenerateEnergy(player);
