@@ -23,7 +23,26 @@
             font-size: 42px;
             font-weight: bold;
             color: #f0b90b;
+            margin-bottom: 20px;
+        }
+        .energy-container {
+            width: 200px;
+            height: 15px;
+            background: #333;
+            border-radius: 10px;
             margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f0b90b, #ffd700);
+            width: 100%;
+            transition: width 0.3s;
+        }
+        .energy-text {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 5px;
         }
         .doge-img {
             width: 250px;
@@ -40,26 +59,96 @@
             margin-top: 20px;
             color: #888;
         }
+        .floating-score {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-weight: bold;
+            font-size: 24px;
+            color: #f0b90b;
+            text-shadow: 0 0 10px rgba(240, 185, 11, 0.8);
+            animation: floatUp 0.9s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="balance">💰 <span id="score">0</span> DOGE</div>
+    <div class="energy-text">⚡ Энергия: <span id="energyCount">100</span>/100</div>
+    <div class="energy-container">
+        <div class="energy-fill" id="energyFill"></div>
+    </div>
     <img src="https://i.ibb.co/Ph1LmJX/doge.png" class="doge-img" id="doge" alt="Doge">
-    <div class="info">Тапай по Doge! Скоро будут Pepe и апгрейды!</div>
+    <div class="info">Тапай по Doge!</div>
 
     <script>
         let score = 0;
+        let energy = 100;
+        const maxEnergy = 100;
+        
         const scoreElement = document.getElementById('score');
         const doge = document.getElementById('doge');
-
+        const energyFill = document.getElementById('energyFill');
+        const energyCount = document.getElementById('energyCount');
+        
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
-
-        doge.addEventListener('click', () => {
+        
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateEnergy();
+            }
+        }, 3000);
+        
+        function updateEnergy() {
+            energyFill.style.width = (energy / maxEnergy * 100) + '%';
+            energyCount.textContent = energy;
+        }
+        
+        doge.addEventListener('click', (e) => {
+            if (energy <= 0) {
+                alert('Энергия закончилась! Подожди немного ⚡');
+                return;
+            }
+            
             score++;
+            energy--;
+            
             scoreElement.textContent = score;
+            updateEnergy();
+            
+            createFloatingScore(e.clientX, e.clientY);
+            
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
         });
+        
+        function createFloatingScore(x, y) {
+            const plusOne = document.createElement('div');
+            plusOne.textContent = '+1';
+            plusOne.className = 'floating-score';
+            plusOne.style.left = (x + Math.random() * 20 - 10) + 'px';
+            plusOne.style.top = (y - 20) + 'px';
+            document.body.appendChild(plusOne);
+            
+            setTimeout(() => plusOne.remove(), 900);
+        }
+        
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
