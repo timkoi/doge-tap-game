@@ -11,7 +11,7 @@ const bot = new Telegraf(BOT_TOKEN);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// База данных в памяти (пока без MongoDB)
+// База данных в памяти
 let players = {};
 
 // API: сохранить очки
