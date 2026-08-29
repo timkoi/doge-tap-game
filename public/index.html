@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Doge Click</title>
+    <title>DOGE Click</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -34,6 +34,58 @@
             display: flex;
             flex-direction: column;
         }
+        
+        /* ==================== ЭКРАН ЗАГРУЗКИ ==================== */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+            opacity: 1;
+        }
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-doge {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            animation: dogeSpin 2s linear infinite, dogeGlow 2s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(240, 185, 11, 0.4);
+        }
+        @keyframes dogeSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes dogeGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(240, 185, 11, 0.3); }
+            50% { box-shadow: 0 0 60px rgba(240, 185, 11, 0.7); }
+        }
+        .loading-title {
+            margin-top: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(240, 185, 11, 0.5);
+            letter-spacing: 1px;
+        }
+        .loading-subtitle {
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+        
+        /* ==================== ИГРОВОЙ ИНТЕРФЕЙС ==================== */
         .game-container {
             display: flex;
             flex-direction: column;
@@ -41,6 +93,11 @@
             max-width: 500px;
             margin: 0 auto;
             width: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .game-container.visible {
+            opacity: 1;
         }
         .top-bar {
             display: flex;
@@ -49,6 +106,7 @@
             padding: 12px 15px;
             background: rgba(15, 18, 32, 0.8);
             border-bottom: 1px solid var(--border-glass);
+            gap: 8px;
         }
         .balance-display {
             display: flex;
@@ -58,6 +116,7 @@
             padding: 6px 12px;
             border-radius: 50px;
             border: 1px solid rgba(240, 185, 11, 0.2);
+            flex-shrink: 0;
         }
         .coin-icon-small {
             width: 24px;
@@ -65,7 +124,7 @@
             border-radius: 50%;
         }
         .balance-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: var(--gold);
         }
@@ -77,12 +136,41 @@
             padding: 6px 12px;
             border-radius: 50px;
             border: 1px solid rgba(155, 89, 182, 0.2);
+            flex-shrink: 0;
         }
         .bones-text {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: var(--purple);
         }
+        
+        /* Telegram кнопка */
+        .telegram-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(74, 158, 255, 0.15);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            pointer-events: auto;
+            position: relative;
+            z-index: 100;
+        }
+        .telegram-btn:active {
+            transform: scale(0.85);
+            background: rgba(74, 158, 255, 0.3);
+        }
+        .telegram-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #4a9eff;
+        }
+        
         .energy-section {
             padding: 8px 15px;
         }
@@ -284,7 +372,15 @@
     </style>
 </head>
 <body>
-    <div class="game-container">
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div id="loadingScreen">
+        <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="loading-doge" alt="Doge">
+        <div class="loading-title">DOGE CLICK</div>
+        <div class="loading-subtitle">by ???coiner</div>
+    </div>
+
+    <!-- ИГРА -->
+    <div class="game-container" id="gameContainer">
         <div class="top-bar">
             <div class="balance-display">
                 <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="coin-icon-small" alt="DOGE">
@@ -292,8 +388,11 @@
             </div>
             <div class="bones-display">
                 <span>🦴</span>
-                <span class="bones-text"><span id="bones">0</span> BONES</span>
+                <span class="bones-text"><span id="bones">0</span></span>
             </div>
+            <button class="telegram-btn" id="telegramBtn">
+                <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+            </button>
         </div>
         <div class="energy-section">
             <div class="energy-header">
@@ -371,6 +470,16 @@
     </div>
 
     <script>
+        // ==================== ЭКРАН ЗАГРУЗКИ ====================
+        const loadingScreen = document.getElementById('loadingScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        
+        // ==================== TELEGRAM КНОПКА ====================
+        document.getElementById('telegramBtn').addEventListener('click', () => {
+            window.open('https://t.me/D0GGZ', '_blank');
+        });
+        
+        // ==================== ПЕРЕМЕННЫЕ ====================
         let score = 0;
         let bones = 0;
         let energy = 100;
@@ -403,7 +512,7 @@
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
         const username = tg.initDataUnsafe?.user?.username || 'Player';
         
-        // ==================== ЗАГРУЗКА С СЕРВЕРА ====================
+        // ==================== ЗАГРУЗКА ====================
         async function loadState() {
             try {
                 const res = await fetch('/api/state/' + userId);
@@ -422,8 +531,18 @@
                 
                 updateUI();
                 loadItems();
+                
+                // Показать игру и скрыть загрузку
+                gameContainer.classList.add('visible');
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 300);
             } catch (err) {
                 console.log('Load error:', err);
+                gameContainer.classList.add('visible');
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 500);
             }
         }
         
@@ -469,7 +588,7 @@
         function openModal(id) { document.getElementById(id).style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        // ==================== ТАП (через сервер) ====================
+        // ==================== ТАП ====================
         doge.addEventListener('click', async (e) => {
             try {
                 const res = await fetch('/api/click', {
@@ -478,7 +597,6 @@
                     body: JSON.stringify({ userId })
                 });
                 const data = await res.json();
-                
                 if (data.success) {
                     score = data.score;
                     energy = data.energy;
@@ -505,7 +623,7 @@
             } catch (err) {}
         }, 10000);
         
-        // ==================== ВОССТАНОВЛЕНИЕ ЭНЕРГИИ (визуальное) ====================
+        // ==================== ВОССТАНОВЛЕНИЕ ЭНЕРГИИ ====================
         setInterval(async () => {
             try {
                 const res = await fetch('/api/state/' + userId);
@@ -525,7 +643,7 @@
         document.getElementById('inventoryBtn').addEventListener('click', () => { openModal('inventoryModal'); showInventory('avatars'); });
         document.getElementById('closeInventory').addEventListener('click', () => closeModal('inventoryModal'));
         
-        // ==================== ПОКУПКИ (через сервер) ====================
+        // ==================== ПОКУПКИ ====================
         document.getElementById('buyTap').addEventListener('click', async () => {
             try {
                 const res = await fetch('/api/buy', {
@@ -591,7 +709,6 @@
                 const data = await res.json();
                 if (data.success) {
                     score = data.newScore;
-                    bones = data.newBones;
                     updateUI();
                     alert('Выигрыш: ' + data.dogePrize + ' DOGE!');
                 } else {
