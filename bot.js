@@ -16,9 +16,7 @@ const GAME_ITEMS = {
     avatars: [
         { id: 'avatar_doge', name: 'Classic Doge', rarity: 'common', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
         { id: 'avatar_gold', name: 'Golden Doge', rarity: 'epic', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-        { id: 'avatar_space', name: 'Space Doge', rarity: 'legendary', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-        { id: 'avatar_pepe', name: 'Pepe Doge', rarity: 'rare', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-        { id: 'avatar_king', name: 'King Doge', rarity: 'legendary', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' }
+        { id: 'avatar_space', name: 'Space Doge', rarity: 'legendary', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' }
     ],
     frames: [
         { id: 'frame_common', name: 'Common Frame', rarity: 'common', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
@@ -28,8 +26,7 @@ const GAME_ITEMS = {
     ],
     backgrounds: [
         { id: 'bg_night', name: 'Night City', rarity: 'rare', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-        { id: 'bg_space', name: 'Space', rarity: 'epic', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-        { id: 'bg_gold', name: 'Golden', rarity: 'legendary', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' }
+        { id: 'bg_space', name: 'Space', rarity: 'epic', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' }
     ]
 };
 
@@ -62,26 +59,60 @@ function getPlayer(userId) {
                 frame: 'frame_common',
                 background: null
             },
+            // Сессия
+            sessionActive: false,
+            lastHeartbeat: 0,
+            lastAutoReward: Date.now(),
             createdAt: Date.now()
         });
     }
     return players.get(userId);
 }
 
+// ==================== ЭНЕРГИЯ ====================
 function regenerateEnergy(player) {
     const now = Date.now();
-    const elapsed = (now - player.lastEnergyUpdate) / 1000;
-    const regenRate = 1 + player.energyLevel * 0.5;
-    const gained = Math.floor(elapsed * regenRate);
-    if (gained > 0) {
-        player.energy = Math.min(player.maxEnergy, player.energy + gained);
+    const elapsed = Math.floor((now - player.lastEnergyUpdate) / 1000);
+    if (elapsed <= 0) return;
+    
+    const regenRate = 1; // 1 энергия в секунду
+    const gained = elapsed * regenRate;
+    
+    if (player.energy + gained >= player.maxEnergy) {
+        player.energy = player.maxEnergy;
+        player.lastEnergyUpdate = now;
+    } else {
+        player.energy += gained;
         player.lastEnergyUpdate = now;
     }
 }
 
+// ==================== АВТОКЛИКЕР (сессионный) ====================
+function processAutoClicker(player) {
+    const now = Date.now();
+    const heartbeatTimeout = 45000; // 45 секунд без heartbeat = неактивен
+    
+    if (!player.sessionActive) return 0;
+    if (now - player.lastHeartbeat > heartbeatTimeout) {
+        player.sessionActive = false;
+        return 0;
+    }
+    
+    if (player.autoLevel <= 0) return 0;
+    
+    const elapsed = Math.floor((now - player.lastAutoReward) / 1000);
+    if (elapsed <= 0) return 0;
+    
+    const gain = player.autoLevel * elapsed;
+    player.score += gain;
+    player.lastAutoReward = now;
+    
+    return gain;
+}
+
 // ==================== RATE LIMITING ====================
 const rateLimit = new Map();
-function checkRate(userId, limit = 60) {
+function checkRate(userId, limit = 30) {
     const now = Date.now();
     const windowMs = 60000;
     if (!rateLimit.has(userId)) rateLimit.set(userId, []);
@@ -95,41 +126,110 @@ function checkRate(userId, limit = 60) {
 
 // ==================== API ====================
 
-// Сохранение прогресса
-app.post('/api/save', (req, res) => {
-    const { userId, username, score, bones, energy, tapLevel, energyLevel, autoLevel, evolution } = req.body;
-    if (!userId) return res.status(400).json({ error: 'No userId' });
-    if (!checkRate(userId)) return res.status(429).json({ error: 'Rate limit' });
-    
-    const player = getPlayer(userId);
-    if (typeof score === 'number' && score >= player.score) player.score = Math.floor(score);
-    if (typeof energy === 'number') player.energy = Math.min(player.maxEnergy, Math.max(0, Math.floor(energy)));
-    player.tapLevel = Math.max(player.tapLevel, Math.floor(tapLevel || 0));
-    player.energyLevel = Math.max(player.energyLevel, Math.floor(energyLevel || 0));
-    player.autoLevel = Math.max(player.autoLevel, Math.floor(autoLevel || 0));
-    player.bones = Math.max(player.bones, Math.floor(bones || 0));
-    player.evolution = Math.max(player.evolution, Math.floor(evolution || 0));
-    if (username) player.username = String(username).slice(0, 50);
-    
-    res.json({ success: true });
-});
-
-// Получение профиля игрока
-app.get('/api/player/:userId', (req, res) => {
+// Получение состояния игрока
+app.get('/api/state/:userId', (req, res) => {
     const player = getPlayer(req.params.userId);
     regenerateEnergy(player);
+    processAutoClicker(player);
+    
     res.json({
         username: player.username,
         score: player.score,
         bones: player.bones,
-        energy: player.energy,
+        energy: Math.floor(player.energy),
         maxEnergy: player.maxEnergy,
         tapLevel: player.tapLevel,
         energyLevel: player.energyLevel,
         autoLevel: player.autoLevel,
         evolution: player.evolution,
         inventory: player.inventory,
-        equipped: player.equipped
+        equipped: player.equipped,
+        sessionActive: player.sessionActive
+    });
+});
+
+// Heartbeat — клиент сообщает "я активен"
+app.post('/api/heartbeat', (req, res) => {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'No userId' });
+    
+    const player = getPlayer(userId);
+    player.sessionActive = true;
+    player.lastHeartbeat = Date.now();
+    
+    // Начислить автокликер за время с последнего heartbeat
+    const autoGain = processAutoClicker(player);
+    
+    res.json({ 
+        success: true, 
+        score: player.score,
+        autoGain: autoGain
+    });
+});
+
+// Обработка тапа
+app.post('/api/click', (req, res) => {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ error: 'No userId' });
+    if (!checkRate(userId, 30)) return res.status(429).json({ error: 'Rate limit' });
+    
+    const player = getPlayer(userId);
+    regenerateEnergy(player);
+    
+    if (player.energy <= 0) {
+        return res.status(400).json({ error: 'No energy' });
+    }
+    
+    const gain = 1 + player.tapLevel;
+    player.score += gain;
+    player.energy -= 1;
+    player.lastEnergyUpdate = Date.now();
+    
+    res.json({
+        success: true,
+        score: player.score,
+        energy: player.energy,
+        gain: gain
+    });
+});
+
+// Покупка улучшения
+app.post('/api/buy', (req, res) => {
+    const { userId, upgradeType } = req.body;
+    if (!userId || !upgradeType) return res.status(400).json({ error: 'Missing params' });
+    if (!checkRate(userId, 10)) return res.status(429).json({ error: 'Rate limit' });
+    
+    const player = getPlayer(userId);
+    
+    let cost;
+    if (upgradeType === 'tap') {
+        cost = Math.floor(100 * Math.pow(1.15, player.tapLevel));
+        if (player.score < cost) return res.status(400).json({ error: 'Not enough DOGE' });
+        player.score -= cost;
+        player.tapLevel++;
+    } else if (upgradeType === 'energy') {
+        cost = Math.floor(150 * Math.pow(1.15, player.energyLevel));
+        if (player.score < cost) return res.status(400).json({ error: 'Not enough DOGE' });
+        player.score -= cost;
+        player.energyLevel++;
+        player.maxEnergy = 100 + player.energyLevel * 50;
+        player.energy = player.maxEnergy;
+    } else if (upgradeType === 'auto') {
+        cost = Math.floor(200 * Math.pow(1.15, player.autoLevel));
+        if (player.score < cost) return res.status(400).json({ error: 'Not enough DOGE' });
+        player.score -= cost;
+        player.autoLevel++;
+    } else {
+        return res.status(400).json({ error: 'Bad upgrade type' });
+    }
+    
+    res.json({
+        success: true,
+        score: player.score,
+        tapLevel: player.tapLevel,
+        energyLevel: player.energyLevel,
+        autoLevel: player.autoLevel,
+        maxEnergy: player.maxEnergy
     });
 });
 
@@ -150,74 +250,21 @@ app.post('/api/case/open', (req, res) => {
     
     const caseConfig = cases[caseType];
     if (!caseConfig) return res.status(400).json({ error: 'Bad case' });
-    
     if (player.score < caseConfig.price) return res.status(400).json({ error: 'Not enough DOGE' });
     
     player.score -= caseConfig.price;
-    
-    // DOGE награда
     const dogePrize = caseConfig.prizes[Math.floor(Math.random() * caseConfig.prizes.length)];
     player.score += dogePrize;
     
-    // Шанс на BONES
-    const bonesChance = caseType === 'legendary' ? 0.5 : caseType === 'epic' ? 0.25 : caseType === 'rare' ? 0.1 : 0.05;
-    let bonesPrize = 0;
-    if (Math.random() < bonesChance) {
-        bonesPrize = caseType === 'legendary' ? 5 : caseType === 'epic' ? 3 : 1;
-        player.bones += bonesPrize;
-    }
-    
-    // Шанс на предмет
-    const itemChance = caseType === 'legendary' ? 0.8 : caseType === 'epic' ? 0.5 : caseType === 'rare' ? 0.25 : 0.1;
-    let itemPrize = null;
-    
-    if (Math.random() < itemChance) {
-        // Выбираем категорию
-        const categories = ['avatars', 'frames', 'backgrounds'];
-        const category = categories[Math.floor(Math.random() * categories.length)];
-        const items = GAME_ITEMS[category];
-        
-        // Редкость зависит от кейса
-        let rarityPool;
-        if (caseType === 'legendary') rarityPool = ['epic', 'legendary', 'legendary', 'epic'];
-        else if (caseType === 'epic') rarityPool = ['rare', 'epic', 'rare', 'epic'];
-        else if (caseType === 'rare') rarityPool = ['common', 'rare', 'common', 'rare'];
-        else rarityPool = ['common', 'common', 'common', 'rare'];
-        
-        const rarity = rarityPool[Math.floor(Math.random() * rarityPool.length)];
-        const rareItems = items.filter(i => i.rarity === rarity);
-        
-        if (rareItems.length > 0) {
-            const item = rareItems[Math.floor(Math.random() * rareItems.length)];
-            if (!player.inventory[category].includes(item.id)) {
-                player.inventory[category].push(item.id);
-            }
-            itemPrize = { ...item, category };
-        }
-    }
-    
-    res.json({
-        success: true,
-        dogePrize,
-        bonesPrize,
-        itemPrize,
-        newScore: player.score,
-        newBones: player.bones
-    });
+    res.json({ success: true, dogePrize, newScore: player.score, newBones: player.bones });
 });
 
-// Экипировка предмета
+// Экипировка
 app.post('/api/equip', (req, res) => {
     const { userId, category, itemId } = req.body;
     if (!userId || !category || !itemId) return res.status(400).json({ error: 'Missing params' });
     
     const player = getPlayer(userId);
-    
-    if (itemId === null) {
-        player.equipped[category] = null;
-        return res.json({ success: true, equipped: player.equipped });
-    }
-    
     if (!player.inventory[category] || !player.inventory[category].includes(itemId)) {
         return res.status(400).json({ error: 'Item not owned' });
     }
@@ -226,7 +273,7 @@ app.post('/api/equip', (req, res) => {
     res.json({ success: true, equipped: player.equipped });
 });
 
-// Лидерборд с предметами
+// Лидерборд
 app.get('/api/leaderboard', (req, res) => {
     const top = Array.from(players.values())
         .sort((a, b) => b.score - a.score)
@@ -240,7 +287,7 @@ app.get('/api/leaderboard', (req, res) => {
     res.json(top);
 });
 
-// Все предметы
+// Предметы
 app.get('/api/items', (req, res) => {
     res.json(GAME_ITEMS);
 });
