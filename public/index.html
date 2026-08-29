@@ -556,7 +556,6 @@
         updateUI();
         sendScoreToServer();
         checkDailyBonus();
-        checkAchievements();
         
         function saveGame() {
             localStorage.setItem('dogeScore', score);
@@ -811,6 +810,7 @@
         ];
         
         function checkAchievements() {
+            if (typeof achievements === 'undefined') return;
             const done = JSON.parse(localStorage.getItem('achievements') || '{}');
             let changed = false;
             
