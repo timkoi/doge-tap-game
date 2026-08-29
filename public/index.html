@@ -22,10 +22,6 @@
             --purple: #9b59b6;
             --red: #e74c3c;
             --green: #2ecc71;
-            --common: #9e9e9e;
-            --rare: #4a9eff;
-            --epic: #9b59b6;
-            --legendary: #f0b90b;
         }
         body {
             background: var(--bg-dark);
@@ -37,11 +33,8 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
         .game-container {
-            position: relative;
-            z-index: 1;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -85,32 +78,10 @@
             border-radius: 50px;
             border: 1px solid rgba(155, 89, 182, 0.2);
         }
-        .bone-icon {
-            font-size: 16px;
-        }
         .bones-text {
             font-size: 14px;
             font-weight: bold;
             color: var(--purple);
-        }
-        .profile-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            padding: 0;
-        }
-        .profile-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
         }
         .energy-section {
             padding: 8px 15px;
@@ -310,114 +281,6 @@
             0% { opacity: 1; transform: translateY(0); }
             100% { opacity: 0; transform: translateY(-80px); }
         }
-        .rarity-common { border-color: var(--common); }
-        .rarity-rare { border-color: var(--rare); box-shadow: 0 0 10px rgba(74, 158, 255, 0.3); }
-        .rarity-epic { border-color: var(--epic); box-shadow: 0 0 15px rgba(155, 89, 182, 0.4); }
-        .rarity-legendary { border-color: var(--legendary); box-shadow: 0 0 20px rgba(240, 185, 11, 0.5); animation: legendaryGlow 2s infinite; }
-        @keyframes legendaryGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(240, 185, 11, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(240, 185, 11, 0.8); }
-        }
-        .inventory-tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            border-radius: 10px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 11px;
-            pointer-events: auto;
-            position: relative;
-            z-index: 100;
-        }
-        .tab-btn.active {
-            background: rgba(240, 185, 11, 0.15);
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        .profile-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        .profile-avatar-wrap {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            position: relative;
-            border: 3px solid var(--border-glass);
-            overflow: hidden;
-        }
-        .profile-avatar {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-        .profile-name {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        .case-open-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .case-box {
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #f0b90b, #d4a30b);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            animation: caseShake 0.5s infinite;
-        }
-        @keyframes caseShake {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-        .case-reveal {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--gold);
-            margin-top: 20px;
-            text-align: center;
-            animation: revealPop 0.5s;
-        }
-        @keyframes revealPop {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -428,12 +291,9 @@
                 <span class="balance-text"><span id="score">0</span> DOGE</span>
             </div>
             <div class="bones-display">
-                <span class="bone-icon">🦴</span>
+                <span>🦴</span>
                 <span class="bones-text"><span id="bones">0</span> BONES</span>
             </div>
-            <button class="profile-btn" id="profileBtn">
-                <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" alt="Profile">
-            </button>
         </div>
         <div class="energy-section">
             <div class="energy-header">
@@ -450,48 +310,12 @@
         </div>
         <div class="bottom-nav">
             <button class="nav-btn" id="shopBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Магазин</span></button>
-            <button class="nav-btn" id="questBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Задания</span></button>
             <button class="nav-btn" id="leaderboardBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Лидеры</span></button>
-            <button class="nav-btn" id="wheelBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Колесо</span></button>
             <button class="nav-btn" id="caseBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Кейсы</span></button>
             <button class="nav-btn" id="inventoryBtn"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="nav-icon"><span class="nav-label">Инвентарь</span></button>
         </div>
     </div>
 
-    <!-- Профиль -->
-    <div class="modal" id="profileModal">
-        <div class="modal-content">
-            <div class="modal-title">Профиль</div>
-            <div class="profile-card" id="profileCard">
-                <div class="profile-avatar-wrap" id="profileAvatarWrap">
-                    <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="profile-avatar" id="profileAvatar">
-                </div>
-                <div class="profile-name" id="profileName">Player</div>
-                <div class="profile-stats">
-                    <span>DOGE: <span id="profileScore">0</span></span>
-                    <span>BONES: <span id="profileBones">0</span></span>
-                    <span>Эволюция: <span id="profileEvolution">Doge</span></span>
-                </div>
-            </div>
-            <button class="btn-close" id="closeProfile">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Инвентарь -->
-    <div class="modal" id="inventoryModal">
-        <div class="modal-content">
-            <div class="modal-title">Инвентарь</div>
-            <div class="inventory-tabs">
-                <button class="tab-btn active" id="tabAvatars">Аватары</button>
-                <button class="tab-btn" id="tabFrames">Рамки</button>
-                <button class="tab-btn" id="tabBackgrounds">Фоны</button>
-            </div>
-            <div id="inventoryList"></div>
-            <button class="btn-close" id="closeInventory">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Магазин -->
     <div class="modal" id="shopModal">
         <div class="modal-content">
             <div class="modal-title">Магазин</div>
@@ -514,16 +338,6 @@
         </div>
     </div>
 
-    <!-- Задания -->
-    <div class="modal" id="questModal">
-        <div class="modal-content">
-            <div class="modal-title">Задания</div>
-            <div id="questList"></div>
-            <button class="btn-close" id="closeQuest">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Лидеры -->
     <div class="modal" id="leaderboardModal">
         <div class="modal-content">
             <div class="modal-title">Лидеры</div>
@@ -532,19 +346,6 @@
         </div>
     </div>
 
-    <!-- Колесо -->
-    <div class="modal" id="wheelModal">
-        <div class="modal-content">
-            <div class="modal-title">Колесо</div>
-            <div class="wheel-container">
-                <div class="wheel" id="wheel"><div class="wheel-center">🎰</div></div>
-                <div class="wheel-result" id="wheelPrize">Крути!</div>
-            </div>
-            <button class="btn-close" id="closeWheel">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Кейсы -->
     <div class="modal" id="caseModal">
         <div class="modal-content">
             <div class="modal-title">Кейсы</div>
@@ -556,14 +357,20 @@
         </div>
     </div>
 
-    <!-- Анимация кейса -->
-    <div class="case-open-animation" id="caseAnimation">
-        <div class="case-box">📦</div>
-        <div class="case-reveal" id="caseReveal"></div>
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-title">Инвентарь</div>
+            <div class="inventory-tabs" style="display:flex;gap:5px;margin-bottom:10px;">
+                <button class="tab-btn active" id="tabAvatars" style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;color:var(--text-secondary);cursor:pointer;">Аватары</button>
+                <button class="tab-btn" id="tabFrames" style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;color:var(--text-secondary);cursor:pointer;">Рамки</button>
+                <button class="tab-btn" id="tabBackgrounds" style="flex:1;padding:8px;background:var(--bg-card);border:1px solid var(--border-glass);border-radius:10px;color:var(--text-secondary);cursor:pointer;">Фоны</button>
+            </div>
+            <div id="inventoryList"></div>
+            <button class="btn-close" id="closeInventory">Закрыть</button>
+        </div>
     </div>
 
     <script>
-        // ==================== ПЕРЕМЕННЫЕ ====================
         let score = 0;
         let bones = 0;
         let energy = 100;
@@ -572,9 +379,8 @@
         let energyLevel = 0;
         let autoLevel = 0;
         let evolution = 0;
-        let tapQuestCount = 0;
-        let inventory = { avatars: ['avatar_doge'], frames: ['frame_common'], backgrounds: [] };
-        let equipped = { avatar: 'avatar_doge', frame: 'frame_common', background: null };
+        let inventory = { avatars: [], frames: [], backgrounds: [] };
+        let equipped = { avatar: null, frame: null, background: null };
         let allItems = { avatars: [], frames: [], backgrounds: [] };
         
         const evolutions = ['Baby Doge', 'Doge', 'Golden Doge', 'King Doge', 'Space Doge', 'Moon Doge', 'Diamond Doge'];
@@ -597,65 +403,43 @@
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
         const username = tg.initDataUnsafe?.user?.username || 'Player';
         
-        // ==================== ЗАГРУЗКА ====================
-        score = parseInt(localStorage.getItem('dogeScore') || '0');
-        bones = parseInt(localStorage.getItem('bones') || '0');
-        tapLevel = parseInt(localStorage.getItem('tapLevel') || '0');
-        energyLevel = parseInt(localStorage.getItem('energyLevel') || '0');
-        autoLevel = parseInt(localStorage.getItem('autoLevel') || '0');
-        evolution = parseInt(localStorage.getItem('evolution') || '0');
-        maxEnergy = 100 + energyLevel * 50;
-        energy = parseInt(localStorage.getItem('energy') || String(maxEnergy));
-        if (energy > maxEnergy) energy = maxEnergy;
-        tapQuestCount = parseInt(localStorage.getItem('tapQuestCount') || '0');
-        
-        const savedInventory = localStorage.getItem('inventory');
-        if (savedInventory) inventory = JSON.parse(savedInventory);
-        const savedEquipped = localStorage.getItem('equipped');
-        if (savedEquipped) equipped = JSON.parse(savedEquipped);
-        
-        scoreElement.textContent = score;
-        bonesElement.textContent = bones;
-        updateUI();
-        loadItems();
-        sendToServer();
-        
-        // ==================== ФУНКЦИИ ====================
-        function saveGame() {
-            localStorage.setItem('dogeScore', score);
-            localStorage.setItem('bones', bones);
-            localStorage.setItem('tapLevel', tapLevel);
-            localStorage.setItem('energyLevel', energyLevel);
-            localStorage.setItem('autoLevel', autoLevel);
-            localStorage.setItem('evolution', evolution);
-            localStorage.setItem('energy', energy);
-            localStorage.setItem('tapQuestCount', tapQuestCount);
-            localStorage.setItem('inventory', JSON.stringify(inventory));
-            localStorage.setItem('equipped', JSON.stringify(equipped));
+        // ==================== ЗАГРУЗКА С СЕРВЕРА ====================
+        async function loadState() {
+            try {
+                const res = await fetch('/api/state/' + userId);
+                const data = await res.json();
+                
+                score = data.score;
+                bones = data.bones;
+                energy = data.energy;
+                maxEnergy = data.maxEnergy;
+                tapLevel = data.tapLevel;
+                energyLevel = data.energyLevel;
+                autoLevel = data.autoLevel;
+                evolution = data.evolution;
+                inventory = data.inventory;
+                equipped = data.equipped;
+                
+                updateUI();
+                loadItems();
+            } catch (err) {
+                console.log('Load error:', err);
+            }
         }
         
-        function sendToServer() {
-            fetch('/api/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, username, score, bones, energy, tapLevel, energyLevel, autoLevel, evolution })
-            }).catch(() => {});
-        }
-        
-        function loadItems() {
-            fetch('/api/items')
-                .then(res => res.json())
-                .then(data => {
-                    allItems = data;
-                })
-                .catch(() => {});
+        async function loadItems() {
+            try {
+                const res = await fetch('/api/items');
+                allItems = await res.json();
+            } catch (err) {}
         }
         
         function updateUI() {
-            energyFill.style.width = (energy / maxEnergy * 100) + '%';
-            energyCount.textContent = energy;
-            maxEnergyText.textContent = maxEnergy;
+            scoreElement.textContent = score;
             bonesElement.textContent = bones;
+            energyFill.style.width = (energy / maxEnergy * 100) + '%';
+            energyCount.textContent = Math.floor(energy);
+            maxEnergyText.textContent = maxEnergy;
             tapLevelEl.textContent = tapLevel;
             energyLevelEl.textContent = energyLevel;
             autoLevelEl.textContent = autoLevel;
@@ -685,68 +469,145 @@
         function openModal(id) { document.getElementById(id).style.display = 'block'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        // ==================== ТАП ====================
-        doge.addEventListener('click', (e) => {
-            if (energy <= 0) return;
-            let gain = 1 + tapLevel;
-            score += gain;
-            energy--;
-            tapQuestCount++;
-            scoreElement.textContent = score;
-            updateUI();
-            saveGame();
-            createFloatingScore(e.clientX, e.clientY, '+' + gain);
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        // ==================== ТАП (через сервер) ====================
+        doge.addEventListener('click', async (e) => {
+            try {
+                const res = await fetch('/api/click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    score = data.score;
+                    energy = data.energy;
+                    updateUI();
+                    createFloatingScore(e.clientX, e.clientY, '+' + data.gain);
+                    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                }
+            } catch (err) {}
         });
         
-        // ==================== ЭНЕРГИЯ ====================
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++;
+        // ==================== HEARTBEAT ====================
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/heartbeat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    score = data.score;
+                    updateUI();
+                }
+            } catch (err) {}
+        }, 10000);
+        
+        // ==================== ВОССТАНОВЛЕНИЕ ЭНЕРГИИ (визуальное) ====================
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/state/' + userId);
+                const data = await res.json();
+                energy = data.energy;
                 updateUI();
-                saveGame();
-            }
-        }, 3000);
+            } catch (err) {}
+        }, 5000);
         
-        // ==================== АВТОКЛИКЕР ====================
-        setInterval(() => {
-            if (autoLevel > 0) {
-                score += autoLevel;
-                scoreElement.textContent = score;
-                saveGame();
-            }
-        }, 1000);
-        
-        // ==================== СЕРВЕР ====================
-        setInterval(() => sendToServer(), 30000);
-        
-        // ==================== ПРОФИЛЬ ====================
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            document.getElementById('profileName').textContent = username;
-            document.getElementById('profileScore').textContent = score;
-            document.getElementById('profileBones').textContent = bones;
-            document.getElementById('profileEvolution').textContent = evolutions[evolution] || 'Doge';
-            const avatarItem = allItems.avatars.find(a => a.id === equipped.avatar);
-            if (avatarItem) document.getElementById('profileAvatar').src = avatarItem.icon;
-            openModal('profileModal');
-        });
-        document.getElementById('closeProfile').addEventListener('click', () => closeModal('profileModal'));
-        
-        // ==================== ИНВЕНТАРЬ ====================
-        let currentTab = 'avatars';
-        
-        document.getElementById('inventoryBtn').addEventListener('click', () => {
-            openModal('inventoryModal');
-            showInventory('avatars');
-        });
+        // ==================== МОДАЛЬНЫЕ ОКНА ====================
+        document.getElementById('shopBtn').addEventListener('click', () => { openModal('shopModal'); updateButtons(); });
+        document.getElementById('closeShop').addEventListener('click', () => closeModal('shopModal'));
+        document.getElementById('leaderboardBtn').addEventListener('click', () => { openModal('leaderboardModal'); loadLeaderboard(); });
+        document.getElementById('closeLeaderboard').addEventListener('click', () => closeModal('leaderboardModal'));
+        document.getElementById('caseBtn').addEventListener('click', () => openModal('caseModal'));
+        document.getElementById('closeCase').addEventListener('click', () => closeModal('caseModal'));
+        document.getElementById('inventoryBtn').addEventListener('click', () => { openModal('inventoryModal'); showInventory('avatars'); });
         document.getElementById('closeInventory').addEventListener('click', () => closeModal('inventoryModal'));
         
+        // ==================== ПОКУПКИ (через сервер) ====================
+        document.getElementById('buyTap').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/buy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, upgradeType: 'tap' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    score = data.score;
+                    tapLevel = data.tapLevel;
+                    updateUI();
+                }
+            } catch (err) {}
+        });
+        
+        document.getElementById('buyEnergy').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/buy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, upgradeType: 'energy' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    score = data.score;
+                    energyLevel = data.energyLevel;
+                    maxEnergy = data.maxEnergy;
+                    updateUI();
+                }
+            } catch (err) {}
+        });
+        
+        document.getElementById('buyAuto').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/buy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, upgradeType: 'auto' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    score = data.score;
+                    autoLevel = data.autoLevel;
+                    updateUI();
+                }
+            } catch (err) {}
+        });
+        
+        // ==================== КЕЙСЫ ====================
+        document.getElementById('caseCommon').addEventListener('click', () => openCase('common'));
+        document.getElementById('caseRare').addEventListener('click', () => openCase('rare'));
+        document.getElementById('caseEpic').addEventListener('click', () => openCase('epic'));
+        document.getElementById('caseLegendary').addEventListener('click', () => openCase('legendary'));
+        
+        async function openCase(caseType) {
+            try {
+                const res = await fetch('/api/case/open', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, caseType })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    score = data.newScore;
+                    bones = data.newBones;
+                    updateUI();
+                    alert('Выигрыш: ' + data.dogePrize + ' DOGE!');
+                } else {
+                    alert(data.error || 'Ошибка');
+                }
+            } catch (err) {
+                alert('Ошибка сети');
+            }
+        }
+        
+        // ==================== ИНВЕНТАРЬ ====================
         document.getElementById('tabAvatars').addEventListener('click', () => showInventory('avatars'));
         document.getElementById('tabFrames').addEventListener('click', () => showInventory('frames'));
         document.getElementById('tabBackgrounds').addEventListener('click', () => showInventory('backgrounds'));
         
         function showInventory(category) {
-            currentTab = category;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tab' + category.charAt(0).toUpperCase() + category.slice(1)).classList.add('active');
             
@@ -765,7 +626,7 @@
                 const isOwned = owned.includes(item.id);
                 const isEquipped = equipped[category] === item.id;
                 const card = document.createElement('div');
-                card.className = 'card rarity-' + item.rarity;
+                card.className = 'card';
                 card.innerHTML = `
                     <div class="card-row">
                         <img src="${item.icon}" class="card-icon">
@@ -779,208 +640,25 @@
                 list.appendChild(card);
                 
                 if (isOwned && !isEquipped) {
-                    const btn = document.getElementById('equip_' + item.id);
-                    btn.addEventListener('click', () => {
-                        equipped[category] = item.id;
-                        saveGame();
-                        fetch('/api/equip', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ userId, category, itemId: item.id })
-                        }).catch(() => {});
-                        showInventory(category);
-                    });
-                }
-            });
-        }
-        
-        // ==================== МАГАЗИН ====================
-        document.getElementById('shopBtn').addEventListener('click', () => { openModal('shopModal'); updateButtons(); });
-        document.getElementById('closeShop').addEventListener('click', () => closeModal('shopModal'));
-        
-        document.getElementById('buyTap').addEventListener('click', () => {
-            const cost = Math.floor(100 * Math.pow(1.15, tapLevel));
-            if (score >= cost) {
-                score -= cost;
-                tapLevel++;
-                scoreElement.textContent = score;
-                saveGame();
-                sendToServer();
-                updateUI();
-            }
-        });
-        
-        document.getElementById('buyEnergy').addEventListener('click', () => {
-            const cost = Math.floor(150 * Math.pow(1.15, energyLevel));
-            if (score >= cost) {
-                score -= cost;
-                energyLevel++;
-                maxEnergy = 100 + energyLevel * 50;
-                energy = maxEnergy;
-                scoreElement.textContent = score;
-                saveGame();
-                sendToServer();
-                updateUI();
-            }
-        });
-        
-        document.getElementById('buyAuto').addEventListener('click', () => {
-            const cost = Math.floor(200 * Math.pow(1.15, autoLevel));
-            if (score >= cost) {
-                score -= cost;
-                autoLevel++;
-                scoreElement.textContent = score;
-                saveGame();
-                sendToServer();
-                updateUI();
-            }
-        });
-        
-        // ==================== КВЕСТЫ ====================
-        const quests = [
-            { id: 'tap_100', name: 'Сделай 100 тапов', reward: 50, check: () => tapQuestCount >= 100 },
-            { id: 'tap_500', name: 'Сделай 500 тапов', reward: 100, check: () => tapQuestCount >= 500 },
-            { id: 'buy_1', name: 'Купи улучшение', reward: 75, check: () => tapLevel + energyLevel + autoLevel >= 1 }
-        ];
-        
-        document.getElementById('questBtn').addEventListener('click', () => { openModal('questModal'); showQuests(); });
-        document.getElementById('closeQuest').addEventListener('click', () => closeModal('questModal'));
-        
-        function showQuests() {
-            const list = document.getElementById('questList');
-            list.innerHTML = '';
-            const doneQuests = JSON.parse(localStorage.getItem('doneQuests') || '{"items":{}}');
-            
-            quests.forEach(q => {
-                const isDone = doneQuests.items[q.id];
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-row">
-                        <div class="card-info">
-                            <div class="card-name">${q.name}</div>
-                            <div class="card-desc">Награда: ${q.reward} DOGE</div>
-                        </div>
-                        ${isDone ? '<span style="color:#2ecc71;font-weight:bold;">✅</span>' : `<button class="btn-buy" id="quest_${q.id}">Выполнить</button>`}
-                    </div>
-                `;
-                list.appendChild(card);
-                
-                if (!isDone) {
-                    const btn = document.getElementById('quest_' + q.id);
-                    btn.addEventListener('click', () => {
-                        if (!q.check()) {
-                            alert('Задание ещё не выполнено!');
-                            return;
-                        }
-                        doneQuests.items[q.id] = true;
-                        localStorage.setItem('doneQuests', JSON.stringify(doneQuests));
-                        score += q.reward;
-                        scoreElement.textContent = score;
-                        saveGame();
-                        showQuests();
-                    });
-                }
-            });
-        }
-        
-        // ==================== КОЛЕСО ====================
-        const prizes = [50, 100, 250, 500, 1000, 2500, 5000, 10000];
-        let wheelSpinning = false;
-        
-        document.getElementById('wheelBtn').addEventListener('click', () => { openModal('wheelModal'); checkWheel(); });
-        document.getElementById('closeWheel').addEventListener('click', () => closeModal('wheelModal'));
-        
-        document.getElementById('wheel').addEventListener('click', () => {
-            if (wheelSpinning) return;
-            const today = new Date().toDateString();
-            const lastWheelDate = localStorage.getItem('lastWheelDate');
-            if (lastWheelDate === today) {
-                alert('Колесо можно крутить раз в день!');
-                return;
-            }
-            wheelSpinning = true;
-            const rotations = 5 + Math.random() * 5;
-            document.getElementById('wheel').style.transform = 'rotate(' + rotations * 360 + 'deg)';
-            const prize = prizes[Math.floor(Math.random() * prizes.length)];
-            setTimeout(() => {
-                score += prize;
-                scoreElement.textContent = score;
-                saveGame();
-                localStorage.setItem('lastWheelDate', today);
-                document.getElementById('wheelPrize').textContent = 'Выигрыш: ' + prize + ' DOGE!';
-                wheelSpinning = false;
-                document.getElementById('wheel').style.transform = 'rotate(0deg)';
-            }, 4000);
-        });
-        
-        function checkWheel() {
-            const today = new Date().toDateString();
-            const lastWheelDate = localStorage.getItem('lastWheelDate');
-            document.getElementById('wheelPrize').textContent = lastWheelDate === today ? 'Уже крутил сегодня!' : 'Крути раз в день!';
-        }
-        
-        // ==================== КЕЙСЫ ====================
-        document.getElementById('caseBtn').addEventListener('click', () => openModal('caseModal'));
-        document.getElementById('closeCase').addEventListener('click', () => closeModal('caseModal'));
-        
-        document.getElementById('caseCommon').addEventListener('click', () => openCaseAnimation('common'));
-        document.getElementById('caseRare').addEventListener('click', () => openCaseAnimation('rare'));
-        document.getElementById('caseEpic').addEventListener('click', () => openCaseAnimation('epic'));
-        document.getElementById('caseLegendary').addEventListener('click', () => openCaseAnimation('legendary'));
-        
-        function openCaseAnimation(caseType) {
-            const anim = document.getElementById('caseAnimation');
-            anim.style.display = 'flex';
-            document.getElementById('caseReveal').textContent = '';
-            
-            setTimeout(() => {
-                fetch('/api/case/open', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, caseType })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        score = data.newScore;
-                        bones = data.newBones;
-                        scoreElement.textContent = score;
-                        bonesElement.textContent = bones;
-                        saveGame();
-                        
-                        let revealText = '+' + data.dogePrize + ' DOGE';
-                        if (data.bonesPrize > 0) revealText += '\n+' + data.bonesPrize + ' BONES';
-                        if (data.itemPrize) {
-                            revealText += '\n🎁 ' + data.itemPrize.name + ' (' + data.itemPrize.rarity + ')';
-                            if (!inventory[data.itemPrize.category].includes(data.itemPrize.id)) {
-                                inventory[data.itemPrize.category].push(data.itemPrize.id);
+                    document.getElementById('equip_' + item.id).addEventListener('click', async () => {
+                        try {
+                            const res = await fetch('/api/equip', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ userId, category, itemId: item.id })
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                equipped = data.equipped;
+                                showInventory(category);
                             }
-                            saveGame();
-                        }
-                        
-                        document.getElementById('caseReveal').textContent = revealText;
-                    } else {
-                        document.getElementById('caseReveal').textContent = data.error || 'Ошибка';
-                    }
-                    
-                    setTimeout(() => {
-                        anim.style.display = 'none';
-                    }, 3000);
-                })
-                .catch(err => {
-                    document.getElementById('caseReveal').textContent = 'Ошибка сети';
-                    setTimeout(() => {
-                        anim.style.display = 'none';
-                    }, 2000);
-                });
-            }, 1500);
+                        } catch (err) {}
+                    });
+                }
+            });
         }
         
         // ==================== ЛИДЕРБОРД ====================
-        document.getElementById('leaderboardBtn').addEventListener('click', () => { openModal('leaderboardModal'); loadLeaderboard(); });
-        document.getElementById('closeLeaderboard').addEventListener('click', () => closeModal('leaderboardModal'));
-        
         function loadLeaderboard() {
             const list = document.getElementById('leaderboardList');
             list.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px;">Загрузка...</div>';
@@ -994,22 +672,21 @@
                     }
                     data.forEach((player, index) => {
                         const div = document.createElement('div');
-                        div.className = 'leaderboard-item';
-                        const avatar = allItems.avatars.find(a => a.id === player.equipped?.avatar);
-                        const avatarSrc = avatar ? avatar.icon : 'https://cryptologos.cc/logos/dogecoin-doge-logo.png';
+                        div.className = 'card';
                         div.innerHTML = `
-                            <span class="leaderboard-rank">#${index + 1}</span>
-                            <img src="${avatarSrc}" style="width:35px;height:35px;border-radius:50%;">
-                            <span class="leaderboard-name">${player.username}</span>
-                            <span class="leaderboard-score">${player.score} DOGE</span>
+                            <div class="card-row">
+                                <span style="font-weight:bold;color:#f0b90b;">#${index + 1}</span>
+                                <span>${player.username}</span>
+                                <span style="color:#f0b90b;font-weight:bold;">${player.score} DOGE</span>
+                            </div>
                         `;
                         list.appendChild(div);
                     });
-                })
-                .catch(() => {
-                    list.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">Ошибка</div>';
                 });
         }
+        
+        // ==================== ЗАПУСК ====================
+        loadState();
     </script>
 </body>
 </html>
