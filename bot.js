@@ -215,7 +215,7 @@ app.post('/api/click', async (req, res) => {
 app.post('/api/buy', async (req, res) => {
     const { userId, upgradeType } = req.body;
     if (!userId || !upgradeType) return res.status(400).json({ error: 'Missing params' });
-    if (!checkRate(userId, 10)) return res.status(429).json({ error: 'Rate limit' });
+    if (!checkRate(userId, 100)) return res.status(429).json({ error: 'Rate limit' });
     try {
         const player = await getPlayer(userId);
         if (upgradeType === 'tap') {
@@ -317,7 +317,6 @@ bot.start((ctx) => {
 app.listen(PORT, async () => {
     console.log('Сервер запущен на порту ' + PORT);
     
-    // Устанавливаем webhook
     try {
         await bot.telegram.setWebhook(WEBHOOK_URL);
         console.log('Webhook установлен!');
