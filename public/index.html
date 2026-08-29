@@ -104,6 +104,19 @@
         tg.expand();
         tg.ready();
         
+        // ЗАГРУЗКА СОХРАНЁННЫХ МОНЕТ
+        const savedScore = localStorage.getItem('dogeScore');
+        if (savedScore) {
+            score = parseInt(savedScore);
+            scoreElement.textContent = score;
+        }
+        
+        // СОХРАНЕНИЕ МОНЕТ
+        function saveScore() {
+            localStorage.setItem('dogeScore', score);
+        }
+        
+        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
@@ -116,6 +129,7 @@
             energyCount.textContent = energy;
         }
         
+        // Тап по Doge
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
                 alert('Энергия закончилась! Подожди немного ⚡');
@@ -127,6 +141,7 @@
             
             scoreElement.textContent = score;
             updateEnergy();
+            saveScore();
             
             createFloatingScore(e.clientX, e.clientY);
             
