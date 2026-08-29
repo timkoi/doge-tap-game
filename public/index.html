@@ -101,6 +101,9 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 15px rgba(240, 185, 11, 0.4);
+            pointer-events: auto;
+            position: relative;
+            z-index: 1000;
         }
         .side-btn:active {
             transform: scale(0.9);
@@ -124,7 +127,7 @@
         .floating-score {
             position: fixed;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 9999;
             font-weight: bold;
             font-size: 22px;
             color: #f0b90b;
@@ -143,7 +146,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.85);
-            z-index: 2000;
+            z-index: 5000;
             overflow-y: auto;
             padding: 20px;
         }
@@ -539,7 +542,6 @@
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
         const username = tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || 'Player';
         
-        // Загрузка сохранений
         score = parseInt(localStorage.getItem('dogeScore') || '0');
         tapLevel = parseInt(localStorage.getItem('tapLevel') || '0');
         energyLevel = parseInt(localStorage.getItem('energyLevel') || '0');
@@ -593,7 +595,6 @@
             buyAuto.textContent = (200 * (autoLevel + 1)) + ' DOGE';
         }
         
-        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
@@ -602,7 +603,6 @@
             }
         }, 3000);
         
-        // Автокликер
         setInterval(() => {
             if (autoLevel > 0) {
                 let gain = autoLevel;
@@ -613,12 +613,10 @@
             }
         }, 1000);
         
-        // Отправка на сервер каждые 30 секунд
         setInterval(() => {
             sendScoreToServer();
         }, 30000);
         
-        // Boost таймер
         setInterval(() => {
             if (boostActive) {
                 boostTimeLeft--;
@@ -629,7 +627,6 @@
             }
         }, 1000);
         
-        // Тап
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
                 return;
@@ -662,12 +659,12 @@
             setTimeout(() => plus.remove(), 900);
         }
         
-        // Ежедневный бонус
         function checkDailyBonus() {
             const today = new Date().toDateString();
             const canClaim = lastClaimDate !== today;
             if (canClaim) {
                 document.getElementById('claimDaily').disabled = false;
+                document.getElementById('claimDaily').textContent = 'Забрать бонус';
             } else {
                 document.getElementById('claimDaily').disabled = true;
                 document.getElementById('claimDaily').textContent = 'Уже получено!';
@@ -701,13 +698,6 @@
             alert('Получено ' + reward + ' DOGE!');
         });
         
-        // Pepe Boost
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'p' || e.key === 'P') {
-                activateBoost();
-            }
-        });
-        
         function activateBoost() {
             if (boostActive) return;
             boostActive = true;
@@ -719,7 +709,6 @@
             }, 30000);
         }
         
-        // Колесо удачи
         const prizes = [100, 250, 500, 1000, 2500, 5000, 10000, 50000];
         let wheelSpinning = false;
         
@@ -770,7 +759,6 @@
             }
         }
         
-        // Кейсы
         document.getElementById('caseBtn').addEventListener('click', () => {
             document.getElementById('caseModal').style.display = 'block';
         });
@@ -802,11 +790,11 @@
             score += prize;
             scoreElement.textContent = score;
             saveGame();
+            localStorage.setItem('lastCaseDate', new Date().toDateString());
             
             alert('Вы выиграли ' + prize + ' DOGE!');
         }
         
-        // Достижения
         const achievements = [
             { id: 'first_tap', name: 'Первый тап', desc: 'Сделай первый тап', check: () => score >= 1, icon: '👆' },
             { id: 'tap_100', name: 'Новичок', desc: 'Набери 100 DOGE', check: () => score >= 100, icon: '💯' },
@@ -870,7 +858,6 @@
             });
         }
         
-        // Магазин
         document.getElementById('shopBtn').addEventListener('click', () => {
             document.getElementById('shopModal').style.display = 'block';
             updateButtons();
@@ -921,7 +908,6 @@
             }
         });
         
-        // Таблица лидеров
         document.getElementById('leaderboardBtn').addEventListener('click', () => {
             document.getElementById('leaderboardModal').style.display = 'block';
             loadLeaderboard();
@@ -958,7 +944,6 @@
                 });
         }
         
-        // Монетизация
         document.getElementById('donateBtn').addEventListener('click', () => {
             document.getElementById('donateModal').style.display = 'block';
         });
@@ -978,10 +963,6 @@
         document.getElementById('payUsdt').addEventListener('click', () => {
             tg.openTelegramLink('https://t.me/wallet?start=USDT_PAYMENT_LINK');
         });
-        
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-        }, { passive: false });
     </script>
 </body>
 </html>
