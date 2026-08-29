@@ -28,7 +28,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .coin-icon {
             width: 35px;
@@ -36,7 +36,7 @@
             border-radius: 50%;
         }
         .balance {
-            font-size: 36px;
+            font-size: 34px;
             font-weight: bold;
             color: #f0b90b;
         }
@@ -57,11 +57,11 @@
         .energy-text {
             font-size: 11px;
             color: #aaa;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .doge-img {
-            width: 220px;
-            height: 220px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             cursor: pointer;
             border: 4px solid #f0b90b;
@@ -71,51 +71,55 @@
         .doge-img:active {
             transform: scale(0.88);
         }
-        .shop-btn {
+        .boost-indicator {
+            color: #f0b90b;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        .side-buttons {
             position: fixed;
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        .side-btn {
             background: #f0b90b;
             color: #1a1a2e;
             border: none;
-            padding: 15px;
+            padding: 12px;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(240, 185, 11, 0.5);
-            z-index: 100;
+            box-shadow: 0 0 15px rgba(240, 185, 11, 0.4);
         }
-        .shop-btn:active {
-            transform: translateY(-50%) scale(0.9);
+        .side-btn:active {
+            transform: scale(0.9);
         }
-        .leaderboard-btn {
-            position: fixed;
-            right: 10px;
-            top: calc(50% + 70px);
-            transform: translateY(-50%);
+        .side-btn.blue {
             background: #3498db;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
-            z-index: 100;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.4);
         }
-        .leaderboard-btn:active {
-            transform: translateY(-50%) scale(0.9);
+        .side-btn.green {
+            background: #2ecc71;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+        .side-btn.purple {
+            background: #9b59b6;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.4);
+        }
+        .side-btn.orange {
+            background: #e67e22;
+            box-shadow: 0 0 15px rgba(230, 126, 34, 0.4);
         }
         .floating-score {
             position: fixed;
@@ -138,7 +142,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 2000;
             overflow-y: auto;
             padding: 20px;
@@ -239,6 +243,128 @@
             color: #f0b90b;
             font-weight: bold;
         }
+        .daily-bonus-info {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #aaa;
+        }
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .wheel {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #f0b90b;
+            background: conic-gradient(#f0b90b 0deg 45deg, #e74c3c 45deg 90deg, #2ecc71 90deg 135deg, #3498db 135deg 180deg, #9b59b6 180deg 225deg, #e67e22 225deg 270deg, #1abc9c 270deg 315deg, #e74c3c 315deg 360deg);
+            cursor: pointer;
+            transition: transform 3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .wheel-center {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        .wheel-prize {
+            text-align: center;
+            font-size: 16px;
+            color: #f0b90b;
+            font-weight: bold;
+        }
+        .achievement-item {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .achievement-icon {
+            font-size: 24px;
+        }
+        .achievement-info {
+            flex: 1;
+        }
+        .achievement-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .achievement-desc {
+            font-size: 11px;
+            color: #aaa;
+        }
+        .achievement-done {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .case-item {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #333;
+        }
+        .case-item:active {
+            transform: scale(0.95);
+        }
+        .case-icon {
+            font-size: 40px;
+        }
+        .case-name {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .case-price {
+            color: #f0b90b;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        .payment-item {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #333;
+        }
+        .payment-item:active {
+            transform: scale(0.95);
+        }
+        .payment-icon {
+            font-size: 35px;
+        }
+        .payment-name {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .payment-desc {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .streak-info {
+            text-align: center;
+            font-size: 18px;
+            color: #f0b90b;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -252,9 +378,17 @@
     <div class="energy-text">⚡ Энергия: <span id="energyCount">100</span>/<span id="maxEnergyText">100</span></div>
     
     <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" class="doge-img" id="doge" alt="Doge">
+    <div class="boost-indicator" id="boostIndicator">🐸 Pepe Boost: x2 активен!</div>
     
-    <button class="shop-btn" id="shopBtn">🛒</button>
-    <button class="leaderboard-btn" id="leaderboardBtn">🏆</button>
+    <div class="side-buttons">
+        <button class="side-btn" id="shopBtn">🛒</button>
+        <button class="side-btn blue" id="leaderboardBtn">🏆</button>
+        <button class="side-btn green" id="dailyBtn">🎁</button>
+        <button class="side-btn purple" id="wheelBtn">🎰</button>
+        <button class="side-btn orange" id="caseBtn">📦</button>
+        <button class="side-btn" id="achieveBtn">🎯</button>
+        <button class="side-btn green" id="donateBtn">💎</button>
+    </div>
 
     <div class="modal" id="shopModal">
         <div class="modal-content">
@@ -301,6 +435,81 @@
         </div>
     </div>
 
+    <div class="modal" id="dailyModal">
+        <div class="modal-content">
+            <div class="modal-title">🎁 Ежедневный бонус</div>
+            <div class="streak-info">🔥 Серия: <span id="streakDays">0</span> дней</div>
+            <div class="daily-bonus-info">Награда сегодня: <span id="dailyReward">100</span> DOGE</div>
+            <button class="upgrade-buy" id="claimDaily" style="width:100%;padding:15px;">Забрать бонус</button>
+            <button class="close-btn" id="closeDaily" style="margin-top:10px;">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="wheelModal">
+        <div class="modal-content">
+            <div class="modal-title">🎰 Колесо удачи</div>
+            <div class="wheel-container">
+                <div class="wheel" id="wheel">
+                    <div class="wheel-center">🎰</div>
+                </div>
+                <div class="wheel-prize" id="wheelPrize">Крути раз в день!</div>
+            </div>
+            <button class="close-btn" id="closeWheel">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="caseModal">
+        <div class="modal-content">
+            <div class="modal-title">📦 Кейсы</div>
+            <div class="case-item" id="caseCommon">
+                <div class="case-icon">📦</div>
+                <div class="case-name">Обычный кейс</div>
+                <div class="case-price">100 DOGE</div>
+            </div>
+            <div class="case-item" id="caseRare">
+                <div class="case-icon">🎁</div>
+                <div class="case-name">Редкий кейс</div>
+                <div class="case-price">500 DOGE</div>
+            </div>
+            <div class="case-item" id="caseEpic">
+                <div class="case-icon">💎</div>
+                <div class="case-name">Эпический кейс</div>
+                <div class="case-price">2000 DOGE</div>
+            </div>
+            <button class="close-btn" id="closeCase">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="achieveModal">
+        <div class="modal-content">
+            <div class="modal-title">🎯 Достижения</div>
+            <div id="achievementsList"></div>
+            <button class="close-btn" id="closeAchieve">Закрыть</button>
+        </div>
+    </div>
+
+    <div class="modal" id="donateModal">
+        <div class="modal-content">
+            <div class="modal-title">💎 Поддержать проект</div>
+            <div class="payment-item" id="payStars">
+                <div class="payment-icon">⭐</div>
+                <div class="payment-name">Telegram Stars</div>
+                <div class="payment-desc">100 Stars = 10,000 DOGE</div>
+            </div>
+            <div class="payment-item" id="payTon">
+                <div class="payment-icon">💎</div>
+                <div class="payment-name">TON</div>
+                <div class="payment-desc">1 TON = 50,000 DOGE</div>
+            </div>
+            <div class="payment-item" id="payUsdt">
+                <div class="payment-icon">💵</div>
+                <div class="payment-name">USDT</div>
+                <div class="payment-desc">1 USDT = 50,000 DOGE</div>
+            </div>
+            <button class="close-btn" id="closeDonate">Закрыть</button>
+        </div>
+    </div>
+
     <script>
         let score = 0;
         let energy = 100;
@@ -308,25 +517,20 @@
         let tapLevel = 0;
         let energyLevel = 0;
         let autoLevel = 0;
+        let boostActive = false;
+        let boostTimeLeft = 0;
+        let streak = 0;
+        let lastClaimDate = '';
         
         const scoreElement = document.getElementById('score');
         const doge = document.getElementById('doge');
         const energyFill = document.getElementById('energyFill');
         const energyCount = document.getElementById('energyCount');
         const maxEnergyText = document.getElementById('maxEnergyText');
+        const boostIndicator = document.getElementById('boostIndicator');
         const tapLevelEl = document.getElementById('tapLevel');
         const energyLevelEl = document.getElementById('energyLevel');
         const autoLevelEl = document.getElementById('autoLevel');
-        const shopBtn = document.getElementById('shopBtn');
-        const shopModal = document.getElementById('shopModal');
-        const closeShop = document.getElementById('closeShop');
-        const buyTap = document.getElementById('buyTap');
-        const buyEnergy = document.getElementById('buyEnergy');
-        const buyAuto = document.getElementById('buyAuto');
-        const leaderboardBtn = document.getElementById('leaderboardBtn');
-        const leaderboardModal = document.getElementById('leaderboardModal');
-        const closeLeaderboard = document.getElementById('closeLeaderboard');
-        const leaderboardList = document.getElementById('leaderboardList');
         
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -335,6 +539,7 @@
         const userId = tg.initDataUnsafe?.user?.id || 'anonymous';
         const username = tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || 'Player';
         
+        // Загрузка сохранений
         score = parseInt(localStorage.getItem('dogeScore') || '0');
         tapLevel = parseInt(localStorage.getItem('tapLevel') || '0');
         energyLevel = parseInt(localStorage.getItem('energyLevel') || '0');
@@ -342,10 +547,14 @@
         maxEnergy = 100 + energyLevel * 50;
         energy = parseInt(localStorage.getItem('energy') || String(maxEnergy));
         if (energy > maxEnergy) energy = maxEnergy;
+        streak = parseInt(localStorage.getItem('streak') || '0');
+        lastClaimDate = localStorage.getItem('lastClaimDate') || '';
         
         scoreElement.textContent = score;
         updateUI();
         sendScoreToServer();
+        checkDailyBonus();
+        checkAchievements();
         
         function saveGame() {
             localStorage.setItem('dogeScore', score);
@@ -353,6 +562,8 @@
             localStorage.setItem('energyLevel', energyLevel);
             localStorage.setItem('autoLevel', autoLevel);
             localStorage.setItem('energy', energy);
+            localStorage.setItem('streak', streak);
+            localStorage.setItem('lastClaimDate', lastClaimDate);
         }
         
         function sendScoreToServer() {
@@ -382,6 +593,7 @@
             buyAuto.textContent = (200 * (autoLevel + 1)) + ' DOGE';
         }
         
+        // Восстановление энергии
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy++;
@@ -390,31 +602,48 @@
             }
         }, 3000);
         
+        // Автокликер
         setInterval(() => {
             if (autoLevel > 0) {
-                score += autoLevel;
+                let gain = autoLevel;
+                if (boostActive) gain *= 2;
+                score += gain;
                 scoreElement.textContent = score;
                 saveGame();
-                sendScoreToServer();
             }
         }, 1000);
         
+        // Отправка на сервер каждые 30 секунд
         setInterval(() => {
             sendScoreToServer();
         }, 30000);
         
+        // Boost таймер
+        setInterval(() => {
+            if (boostActive) {
+                boostTimeLeft--;
+                if (boostTimeLeft <= 0) {
+                    boostActive = false;
+                    boostIndicator.style.display = 'none';
+                }
+            }
+        }, 1000);
+        
+        // Тап
         doge.addEventListener('click', (e) => {
             if (energy <= 0) {
                 return;
             }
             
-            const gain = 1 + tapLevel;
+            let gain = 1 + tapLevel;
+            if (boostActive) gain *= 2;
             score += gain;
             energy--;
             
             scoreElement.textContent = score;
             updateUI();
             saveGame();
+            checkAchievements();
             
             createFloatingScore(e.clientX, e.clientY, '+' + gain);
             
@@ -433,16 +662,225 @@
             setTimeout(() => plus.remove(), 900);
         }
         
-        shopBtn.addEventListener('click', () => {
-            shopModal.style.display = 'block';
+        // Ежедневный бонус
+        function checkDailyBonus() {
+            const today = new Date().toDateString();
+            const canClaim = lastClaimDate !== today;
+            if (canClaim) {
+                document.getElementById('claimDaily').disabled = false;
+            } else {
+                document.getElementById('claimDaily').disabled = true;
+                document.getElementById('claimDaily').textContent = 'Уже получено!';
+            }
+            document.getElementById('streakDays').textContent = streak;
+            document.getElementById('dailyReward').textContent = 100 + streak * 50;
+        }
+        
+        document.getElementById('dailyBtn').addEventListener('click', () => {
+            document.getElementById('dailyModal').style.display = 'block';
+            checkDailyBonus();
+        });
+        
+        document.getElementById('closeDaily').addEventListener('click', () => {
+            document.getElementById('dailyModal').style.display = 'none';
+        });
+        
+        document.getElementById('claimDaily').addEventListener('click', () => {
+            const today = new Date().toDateString();
+            if (lastClaimDate === today) return;
+            
+            const reward = 100 + streak * 50;
+            score += reward;
+            streak++;
+            lastClaimDate = today;
+            
+            scoreElement.textContent = score;
+            saveGame();
+            checkDailyBonus();
+            
+            alert('Получено ' + reward + ' DOGE!');
+        });
+        
+        // Pepe Boost
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'p' || e.key === 'P') {
+                activateBoost();
+            }
+        });
+        
+        function activateBoost() {
+            if (boostActive) return;
+            boostActive = true;
+            boostTimeLeft = 30;
+            boostIndicator.style.display = 'block';
+            setTimeout(() => {
+                boostActive = false;
+                boostIndicator.style.display = 'none';
+            }, 30000);
+        }
+        
+        // Колесо удачи
+        const prizes = [100, 250, 500, 1000, 2500, 5000, 10000, 50000];
+        let wheelSpinning = false;
+        
+        document.getElementById('wheelBtn').addEventListener('click', () => {
+            document.getElementById('wheelModal').style.display = 'block';
+            checkWheelAvailability();
+        });
+        
+        document.getElementById('closeWheel').addEventListener('click', () => {
+            document.getElementById('wheelModal').style.display = 'none';
+        });
+        
+        document.getElementById('wheel').addEventListener('click', () => {
+            if (wheelSpinning) return;
+            
+            const lastWheelDate = localStorage.getItem('lastWheelDate');
+            const today = new Date().toDateString();
+            if (lastWheelDate === today) {
+                alert('Колесо можно крутить раз в день!');
+                return;
+            }
+            
+            wheelSpinning = true;
+            const rotations = 5 + Math.random() * 5;
+            const degrees = rotations * 360;
+            document.getElementById('wheel').style.transform = 'rotate(' + degrees + 'deg)';
+            
+            const prize = prizes[Math.floor(Math.random() * prizes.length)];
+            
+            setTimeout(() => {
+                score += prize;
+                scoreElement.textContent = score;
+                saveGame();
+                localStorage.setItem('lastWheelDate', today);
+                document.getElementById('wheelPrize').textContent = 'Выигрыш: ' + prize + ' DOGE!';
+                wheelSpinning = false;
+                document.getElementById('wheel').style.transform = 'rotate(0deg)';
+            }, 3000);
+        });
+        
+        function checkWheelAvailability() {
+            const lastWheelDate = localStorage.getItem('lastWheelDate');
+            const today = new Date().toDateString();
+            if (lastWheelDate === today) {
+                document.getElementById('wheelPrize').textContent = 'Уже крутил сегодня!';
+            } else {
+                document.getElementById('wheelPrize').textContent = 'Крути раз в день!';
+            }
+        }
+        
+        // Кейсы
+        document.getElementById('caseBtn').addEventListener('click', () => {
+            document.getElementById('caseModal').style.display = 'block';
+        });
+        
+        document.getElementById('closeCase').addEventListener('click', () => {
+            document.getElementById('caseModal').style.display = 'none';
+        });
+        
+        document.getElementById('caseCommon').addEventListener('click', () => {
+            openCase(100, [50, 100, 150, 200, 300]);
+        });
+        
+        document.getElementById('caseRare').addEventListener('click', () => {
+            openCase(500, [200, 400, 600, 800, 1000]);
+        });
+        
+        document.getElementById('caseEpic').addEventListener('click', () => {
+            openCase(2000, [500, 1000, 2000, 3000, 5000]);
+        });
+        
+        function openCase(price, prizes) {
+            if (score < price) {
+                alert('Недостаточно DOGE!');
+                return;
+            }
+            
+            score -= price;
+            const prize = prizes[Math.floor(Math.random() * prizes.length)];
+            score += prize;
+            scoreElement.textContent = score;
+            saveGame();
+            
+            alert('Вы выиграли ' + prize + ' DOGE!');
+        }
+        
+        // Достижения
+        const achievements = [
+            { id: 'first_tap', name: 'Первый тап', desc: 'Сделай первый тап', check: () => score >= 1, icon: '👆' },
+            { id: 'tap_100', name: 'Новичок', desc: 'Набери 100 DOGE', check: () => score >= 100, icon: '💯' },
+            { id: 'tap_1000', name: 'Тапер', desc: 'Набери 1,000 DOGE', check: () => score >= 1000, icon: '🔥' },
+            { id: 'tap_10000', name: 'Профи', desc: 'Набери 10,000 DOGE', check: () => score >= 10000, icon: '💪' },
+            { id: 'tap_100000', name: 'Мастер', desc: 'Набери 100,000 DOGE', check: () => score >= 100000, icon: '🏆' },
+            { id: 'tap_1000000', name: 'Легенда', desc: 'Набери 1,000,000 DOGE', check: () => score >= 1000000, icon: '👑' },
+            { id: 'buy_tap', name: 'Инвестор', desc: 'Купи первое улучшение', check: () => tapLevel > 0 || energyLevel > 0 || autoLevel > 0, icon: '💰' },
+            { id: 'buy_auto', name: 'Автоматизация', desc: 'Купи автокликер', check: () => autoLevel > 0, icon: '🤖' },
+            { id: 'streak_3', name: 'Верный игрок', desc: '3 дня подряд', check: () => streak >= 3, icon: '📅' },
+            { id: 'streak_7', name: 'Неделя силы', desc: '7 дней подряд', check: () => streak >= 7, icon: '🔥' },
+            { id: 'wheel_1', name: 'Колесо удачи', desc: 'Крути колесо', check: () => localStorage.getItem('lastWheelDate'), icon: '🎰' },
+            { id: 'case_1', name: 'Открыватель', desc: 'Открой кейс', check: () => localStorage.getItem('lastCaseDate'), icon: '📦' }
+        ];
+        
+        function checkAchievements() {
+            const done = JSON.parse(localStorage.getItem('achievements') || '{}');
+            let changed = false;
+            
+            achievements.forEach(a => {
+                if (!done[a.id] && a.check()) {
+                    done[a.id] = true;
+                    changed = true;
+                    score += 500;
+                    scoreElement.textContent = score;
+                }
+            });
+            
+            if (changed) {
+                localStorage.setItem('achievements', JSON.stringify(done));
+                saveGame();
+            }
+        }
+        
+        document.getElementById('achieveBtn').addEventListener('click', () => {
+            document.getElementById('achieveModal').style.display = 'block';
+            showAchievements();
+        });
+        
+        document.getElementById('closeAchieve').addEventListener('click', () => {
+            document.getElementById('achieveModal').style.display = 'none';
+        });
+        
+        function showAchievements() {
+            const done = JSON.parse(localStorage.getItem('achievements') || '{}');
+            const list = document.getElementById('achievementsList');
+            list.innerHTML = '';
+            
+            achievements.forEach(a => {
+                const item = document.createElement('div');
+                item.className = 'achievement-item';
+                item.innerHTML = `
+                    <span class="achievement-icon">${a.icon}</span>
+                    <div class="achievement-info">
+                        <div class="achievement-name">${a.name} ${done[a.id] ? '✅' : ''}</div>
+                        <div class="achievement-desc">${a.desc}</div>
+                    </div>
+                    ${done[a.id] ? '<span class="achievement-done">+500 DOGE</span>' : '<span style="color:#aaa">Заблокировано</span>'}
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // Магазин
+        document.getElementById('shopBtn').addEventListener('click', () => {
+            document.getElementById('shopModal').style.display = 'block';
             updateButtons();
         });
         
-        closeShop.addEventListener('click', () => {
-            shopModal.style.display = 'none';
+        document.getElementById('closeShop').addEventListener('click', () => {
+            document.getElementById('shopModal').style.display = 'none';
         });
         
-        buyTap.addEventListener('click', () => {
+        document.getElementById('buyTap').addEventListener('click', () => {
             const cost = 100 * (tapLevel + 1);
             if (score >= cost) {
                 score -= cost;
@@ -451,10 +889,11 @@
                 saveGame();
                 sendScoreToServer();
                 updateUI();
+                checkAchievements();
             }
         });
         
-        buyEnergy.addEventListener('click', () => {
+        document.getElementById('buyEnergy').addEventListener('click', () => {
             const cost = 150 * (energyLevel + 1);
             if (score >= cost) {
                 score -= cost;
@@ -465,10 +904,11 @@
                 saveGame();
                 sendScoreToServer();
                 updateUI();
+                checkAchievements();
             }
         });
         
-        buyAuto.addEventListener('click', () => {
+        document.getElementById('buyAuto').addEventListener('click', () => {
             const cost = 200 * (autoLevel + 1);
             if (score >= cost) {
                 score -= cost;
@@ -477,26 +917,29 @@
                 saveGame();
                 sendScoreToServer();
                 updateUI();
+                checkAchievements();
             }
         });
         
-        leaderboardBtn.addEventListener('click', () => {
-            leaderboardModal.style.display = 'block';
+        // Таблица лидеров
+        document.getElementById('leaderboardBtn').addEventListener('click', () => {
+            document.getElementById('leaderboardModal').style.display = 'block';
             loadLeaderboard();
         });
         
-        closeLeaderboard.addEventListener('click', () => {
-            leaderboardModal.style.display = 'none';
+        document.getElementById('closeLeaderboard').addEventListener('click', () => {
+            document.getElementById('leaderboardModal').style.display = 'none';
         });
         
         function loadLeaderboard() {
-            leaderboardList.innerHTML = '<li>Загрузка...</li>';
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '<li>Загрузка...</li>';
             fetch('/api/leaderboard')
                 .then(res => res.json())
                 .then(data => {
-                    leaderboardList.innerHTML = '';
+                    list.innerHTML = '';
                     if (data.length === 0) {
-                        leaderboardList.innerHTML = '<li>Пока никого нет. Стань первым!</li>';
+                        list.innerHTML = '<li>Пока никого нет. Стань первым!</li>';
                         return;
                     }
                     data.forEach((player, index) => {
@@ -507,13 +950,34 @@
                             <span class="leaderboard-name">${player.username}</span>
                             <span class="leaderboard-score">${player.score} DOGE</span>
                         `;
-                        leaderboardList.appendChild(li);
+                        list.appendChild(li);
                     });
                 })
                 .catch(err => {
-                    leaderboardList.innerHTML = '<li>Ошибка загрузки</li>';
+                    list.innerHTML = '<li>Ошибка загрузки</li>';
                 });
         }
+        
+        // Монетизация
+        document.getElementById('donateBtn').addEventListener('click', () => {
+            document.getElementById('donateModal').style.display = 'block';
+        });
+        
+        document.getElementById('closeDonate').addEventListener('click', () => {
+            document.getElementById('donateModal').style.display = 'none';
+        });
+        
+        document.getElementById('payStars').addEventListener('click', () => {
+            tg.openInvoice('STARS_PAYMENT_LINK');
+        });
+        
+        document.getElementById('payTon').addEventListener('click', () => {
+            tg.openTelegramLink('https://t.me/wallet?start=TON_PAYMENT_LINK');
+        });
+        
+        document.getElementById('payUsdt').addEventListener('click', () => {
+            tg.openTelegramLink('https://t.me/wallet?start=USDT_PAYMENT_LINK');
+        });
         
         document.addEventListener('touchmove', (e) => {
             e.preventDefault();
